@@ -1,4 +1,4 @@
-var trex, trex_running, edges;
+var trex, trex_running, edges, trex_collided;
 var groundImage;
 var chao;
 var chao2;
@@ -7,6 +7,7 @@ var cacto;
 var cacto1, cacto2, cacto3, cacto4, cacto5, cacto6; 
 var score = 0;
 var cactoGroup, nuvemGroup;
+var gameOver, restart, gameOverIMG, restartIMG;
 const PLAY = 1, END = 0;
 var gameState = PLAY;
 
@@ -14,6 +15,7 @@ var gameState = PLAY;
 
 function preload(){
   trex_running = loadAnimation("trex1.png","trex3.png","trex4.png");
+  trex_collided = loadAnimation("trex_collided.png")
   groundImage = loadImage("ground2.png");
   nuvemImage = loadImage("cloud.png");
   cacto1 = loadImage("obstacle1.png");
@@ -22,6 +24,8 @@ function preload(){
   cacto4 = loadImage("obstacle4.png");
   cacto5 = loadImage("obstacle5.png");
   cacto6 = loadImage("obstacle6.png");
+  gameOverIMG = loadImage("gameOver.png");
+  restartIMG = loadImage("restart.png");
 }
 
 function setup(){
@@ -30,17 +34,29 @@ function setup(){
   cactoGroup = new Group();
   nuvemGroup = new Group();
 
-  //criando o trex
+  gameOver = createSprite(300, 100);
+  gameOver.addImage(gameOverIMG)
+  gameOver.scale = 0.7;
+  gameOver.visible = 0;
+
+  restart = createSprite(300, 140);
+  restart.addImage(restartIMG);
+  restart.scale = 0.7;
+  restart.visible = 0;
+  
   chao2 = createSprite(200, 190, 400, 10);
   chao2.visible = 0; 
   trex = createSprite(50, 160, 20, 50);
   trex.addAnimation("running", trex_running);
+  trex.addAnimation("colisão", trex_collided)
   edges = createEdgeSprites();
   chao = createSprite(200, 180, 400, 20);
   
   trex.scale = 0.5;
   trex.x = 50
   chao.addImage("chao", groundImage);
+  //trex.debug = 1;
+  trex.setCollider("circle", 0, 0, 35);
 }
 
 function draw(){
@@ -75,6 +91,12 @@ function draw(){
     chao.velocityX = 0;
     nuvemGroup.setVelocityXEach(0);
     cactoGroup.setVelocityXEach(0);
+    cactoGroup.setLifetimeEach(-1);
+    nuvemGroup.setLifetimeEach(-1);
+    trex.velocityY = 0;
+    trex.changeAnimation("colisão", trex_collided);
+    gameOver.visible = 1;
+    restart.visible = 1;
   }
 }
 
