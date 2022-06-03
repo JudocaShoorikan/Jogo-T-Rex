@@ -6,6 +6,11 @@ var nuvem, nuvemImage;
 var cacto;
 var cacto1, cacto2, cacto3, cacto4, cacto5, cacto6; 
 var score = 0;
+var cactoGroup, nuvemGroup;
+const PLAY = 1, END = 0;
+var gameState = PLAY;
+
+
 
 function preload(){
   trex_running = loadAnimation("trex1.png","trex3.png","trex4.png");
@@ -22,6 +27,9 @@ function preload(){
 function setup(){
   createCanvas(600, 200);
   
+  cactoGroup = new Group();
+  nuvemGroup = new Group();
+
   //criando o trex
   chao2 = createSprite(200, 190, 400, 10);
   chao2.visible = 0; 
@@ -38,24 +46,36 @@ function setup(){
 function draw(){
   background("white");
   
-  if(keyDown("space") && trex.y > 145){
-    trex.velocityY = -8.5;
-  }
-  
-  trex.velocityY = trex.velocityY + 0.5;
-  chao.velocityX = -3;
-  
-  if (chao.x <= 0){
-    chao.x = chao.width/2;
-  }
-
   trex.collide(chao2);
 
   text("Pontuação:" + score, 500, 50)
-  score += Math.round(frameCount /60)
+  
   drawSprites();
-  nuvens();
-  cactos();
+
+
+  if(gameState == PLAY){
+    if(keyDown("space") && trex.y > 145){
+      trex.velocityY = -8.5;
+    }
+    trex.velocityY = trex.velocityY + 0.5;
+    chao.velocityX = -3;
+
+    if (chao.x <= 0){
+      chao.x = chao.width/2;
+    }
+    score += Math.round(frameCount /60)
+    nuvens();
+    cactos();
+
+    if(trex.isTouching(cactoGroup)) { 
+      gameState = END;
+    }
+  } 
+  else {
+    chao.velocityX = 0;
+    nuvemGroup.setVelocityXEach(0);
+    cactoGroup.setVelocityXEach(0);
+  }
 }
 
 function nuvens() {
@@ -68,6 +88,7 @@ function nuvens() {
     nuvem.depth = trex.depth
     trex.depth ++;
     nuvem.lifetime = 240;
+    nuvemGroup.add(nuvem)
   }
 }
 
@@ -77,6 +98,7 @@ function cactos() {
     cacto.scale = 0.6;  
     cacto.velocityX = -6;
     var numero = Math.round(random (1, 6));
+    cactoGroup.add(cacto);
     
     switch(numero) {
       case 1:
