@@ -12,7 +12,6 @@ const PLAY = 1, END = 0;
 var gameState = PLAY;
 
 
-
 function preload(){
   trex_running = loadAnimation("trex1.png","trex3.png","trex4.png");
   trex_collided = loadAnimation("trex_collided.png")
@@ -69,7 +68,7 @@ function draw(){
   drawSprites();
 
 
-  if(gameState == PLAY){
+  if(gameState == PLAY) {
     if(keyDown("space") && trex.y > 145){
       trex.velocityY = -8.5;
     }
