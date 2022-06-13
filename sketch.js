@@ -10,6 +10,7 @@ var cactoGroup, nuvemGroup;
 var gameOver, restart, gameOverIMG, restartIMG;
 const PLAY = 1, END = 0;
 var gameState = PLAY;
+var somGameOver, somJump, somCheckpoint;
 
 
 function preload(){
@@ -25,6 +26,9 @@ function preload(){
   cacto6 = loadImage("obstacle6.png");
   gameOverIMG = loadImage("gameOver.png");
   restartIMG = loadImage("restart.png");
+  somGameOver = loadSound("die.mp3")
+  somJump = loadSound("jump.mp3")
+  somCheckpoint = loadSound("checkpoint.mp3");
 }
 
 function setup(){
@@ -56,6 +60,7 @@ function setup(){
   chao.addImage("chao", groundImage);
   //trex.debug = 1;
   trex.setCollider("circle", 0, 0, 35);
+  //trex.setCollider("rectangle", 0, 0, 400, trex.height);
 }
 
 function draw(){
@@ -71,6 +76,7 @@ function draw(){
   if(gameState == PLAY) {
     if(keyDown("space") && trex.y > 145){
       trex.velocityY = -8.5;
+      somJump.play();
     }
     trex.velocityY = trex.velocityY + 0.5;
     chao.velocityX = -3;
@@ -79,11 +85,15 @@ function draw(){
       chao.x = chao.width/2;
     }
     score += Math.round(frameCount /60)
+    if (score %200 === 0 && score > 0) {
+      somCheckpoint.play();
+    }
     nuvens();
     cactos();
 
-    if(trex.isTouching(cactoGroup)) { 
+    if(trex.isTouching(cactoGroup)) {  
       gameState = END;
+      somGameOver.play();
     }
   } 
   else {
@@ -109,7 +119,7 @@ function nuvens() {
     nuvem.depth = trex.depth
     trex.depth ++;
     nuvem.lifetime = 240;
-    nuvemGroup.add(nuvem)
+    nuvemGroup.add(nuvem);
   }
 }
 
@@ -117,7 +127,8 @@ function cactos() {
   if (frameCount %50 == 0) {
     cacto = createSprite(610, 165, 10, 40);
     cacto.scale = 0.6;  
-    cacto.velocityX = -6;
+    cacto.velocityX = -(6 + score/100);
+
     var numero = Math.round(random (1, 6));
     cactoGroup.add(cacto);
     
