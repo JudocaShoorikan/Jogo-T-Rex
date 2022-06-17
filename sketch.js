@@ -78,16 +78,19 @@ function draw(){
       trex.velocityY = -8.5;
       somJump.play();
     }
+    
     trex.velocityY = trex.velocityY + 0.5;
     chao.velocityX = -3;
 
     if (chao.x <= 0){
       chao.x = chao.width/2;
     }
-    score += Math.round(frameCount /60)
+    
+    score += Math.round(getFrameRate() /60.1)
     if (score %200 === 0 && score > 0) {
       somCheckpoint.play();
     }
+    
     nuvens();
     cactos();
 
@@ -106,6 +109,10 @@ function draw(){
     trex.changeAnimation("colisão", trex_collided);
     gameOver.visible = 1;
     restart.visible = 1;
+
+    if(mousePressedOver(restart)) {
+      reset();
+    }
   }
 }
 
@@ -155,4 +162,14 @@ function cactos() {
   
     cacto.lifetime = 240;
   }
+}
+
+function reset() {
+  gameState = PLAY;
+  score = 0;
+  trex.changeAnimation("running", trex_running);
+  gameOver.visible = 0;
+  restart.visible = 0;
+  nuvemGroup.destroyEach();
+  cactoGroup.destroyEach();
 }
