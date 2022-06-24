@@ -74,9 +74,10 @@ function draw(){
 
 
   if(gameState == PLAY) {
-    if(keyDown("space") && trex.y > height - 90){
+    if((touches.length > 0 || keyDown("space")) && trex.y > height - 90){
       trex.velocityY = -9;
       somJump.play();
+      touches = [];
     }
     
     trex.velocityY = trex.velocityY + 0.5;
@@ -110,8 +111,9 @@ function draw(){
     gameOver.visible = 1;
     restart.visible = 1;
 
-    if(mousePressedOver(restart)) {
+    if(mousePressedOver(restart) || touches.length > 0) {
       reset();
+      touches = [];
     }
   }
 }
@@ -172,4 +174,5 @@ function reset() {
   restart.visible = 0;
   nuvemGroup.destroyEach();
   cactoGroup.destroyEach();
+
 }
