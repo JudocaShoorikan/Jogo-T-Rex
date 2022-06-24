@@ -32,28 +32,28 @@ function preload(){
 }
 
 function setup(){
-  createCanvas(600, 200);
+  createCanvas(windowWidth, windowHeight);
   
   cactoGroup = new Group();
   nuvemGroup = new Group();
 
-  gameOver = createSprite(300, 100);
+  gameOver = createSprite(width/2, height/2.3);
   gameOver.addImage(gameOverIMG)
   gameOver.scale = 0.7;
   gameOver.visible = 0;
 
-  restart = createSprite(300, 140);
+  restart = createSprite(width/2, height/2);
   restart.addImage(restartIMG);
   restart.scale = 0.7;
   restart.visible = 0;
   
-  chao2 = createSprite(200, 190, 400, 10);
+  chao2 = createSprite(200, height - 50, 400, 10);
   chao2.visible = 0; 
-  trex = createSprite(50, 160, 20, 50);
+  trex = createSprite(width - 50, height - 50 , 20, 50);
   trex.addAnimation("running", trex_running);
   trex.addAnimation("colisão", trex_collided)
   edges = createEdgeSprites();
-  chao = createSprite(200, 180, 400, 20);
+  chao = createSprite(200, height - 60, 400, 20);
   
   trex.scale = 0.5;
   trex.x = 50
@@ -68,14 +68,14 @@ function draw(){
   
   trex.collide(chao2);
 
-  text("Pontuação:" + score, 500, 50)
+  text("Pontuação:" + score, width - 100, 50)
   
   drawSprites();
 
 
   if(gameState == PLAY) {
-    if(keyDown("space") && trex.y > 145){
-      trex.velocityY = -8.5;
+    if(keyDown("space") && trex.y > height - 90){
+      trex.velocityY = -9;
       somJump.play();
     }
     
@@ -118,21 +118,21 @@ function draw(){
 
 function nuvens() {
   if (frameCount %40 == 0){
-    nuvem = createSprite(600, 100, 40, 10);
+    nuvem = createSprite(width, height + 100, 40, 10);
     nuvem.scale = 0.7;
     nuvem.velocityX = -3;
     nuvem.addImage(nuvemImage);
-    nuvem.y = Math.round(random (10, 100));
+    nuvem.y = Math.round(random (height/2, height - 150));
     nuvem.depth = trex.depth
     trex.depth ++;
-    nuvem.lifetime = 240;
+    nuvem.lifetime = width/3;
     nuvemGroup.add(nuvem);
   }
 }
 
 function cactos() {
   if (frameCount %50 == 0) {
-    cacto = createSprite(610, 165, 10, 40);
+    cacto = createSprite(width, height - 70, 10, 40);
     cacto.scale = 0.6;  
     cacto.velocityX = -(6 + score/100);
 
